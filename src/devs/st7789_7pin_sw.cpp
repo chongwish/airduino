@@ -1,7 +1,8 @@
 #include "st7789_7pin_sw.hpp"
 
-St7789_7pin::St7789_7pin(uint8_t sck_pin, uint8_t sda_pin, uint8_t rst_pin, uint8_t dc_pin, uint8_t blk_pin)
-: sck_pin(sck_pin), sda_pin(sda_pin), rst_pin(rst_pin), dc_pin(dc_pin), blk_pin(blk_pin) {
+St7789_7pin::St7789_7pin(uint16_t width, uint16_t height, uint8_t sck_pin, uint8_t sda_pin, uint8_t rst_pin, uint8_t dc_pin, uint8_t blk_pin) :
+    sck_pin(sck_pin), sda_pin(sda_pin), rst_pin(rst_pin), dc_pin(dc_pin), blk_pin(blk_pin),
+    Display<uint16_t>(width, height) {
 }
 
 void St7789_7pin::begin() {

@@ -3,8 +3,8 @@
 #include <devs/st7789_7pin_sw.hpp>
 #include <libs/graphics.hpp>
 
-St7789_7pin st7789(PA_5, PA_7, PA_6, PB_1, PB_0);
-Graphics graphics(st7789, 240, 240);
+St7789_7pin st7789(240, 240, PA_5, PA_7, PA_6, PB_1, PB_0);
+Graphics<uint16_t> graphics(st7789);
 
 void setup() {
     st7789.begin();

@@ -20,7 +20,6 @@ void Mpu6050::getRawData(int16_t &ax, int16_t &ay, int16_t &az, int16_t &gx, int
     Wire.write(MPU_ACCEL_XOUT_H);
     Wire.endTransmission(true);
 
-    Wire.beginTransmission(MPU_ADDRESS);
     Wire.requestFrom((size_t)MPU_ADDRESS, (size_t)14, true);
 
     ax = Wire.read() << 8 | Wire.read(); // 0x3B (ACCEL_XOUT_H) & 0x3C (ACCEL_XOUT_L)
@@ -29,7 +28,7 @@ void Mpu6050::getRawData(int16_t &ax, int16_t &ay, int16_t &az, int16_t &gx, int
     temperature = Wire.read() << 8 | Wire.read(); // 0x41 (TEMP_OUT_H) &  0x42 (TEMP_OUT_L)
     gx = Wire.read() << 8 | Wire.read(); // 0x3B (ACCEL_XOUT_H) & 0x3C (ACCEL_XOUT_L)
     gy = Wire.read() << 8 | Wire.read(); // 0x3D (ACCEL_YOUT_H) & 0x3E (ACCEL_YOUT_L)
-    gz = Wire.read() << 8 | Wire.read(); // 0x3F (ACCEL_ZOUT_H) & 0x40 (ACCEL_ZOUT_L)   
+    gz = Wire.read() << 8 | Wire.read(); // 0x3F (ACCEL_ZOUT_H) & 0x40 (ACCEL_ZOUT_L)
 }
 
 inline float Mpu6050::convertAccelerometer(int16_t value) {
