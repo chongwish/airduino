@@ -1,5 +1,4 @@
 #include "../airduino.h"
-#include "coordinate.hpp"
 #include "display.hpp"
 
 #ifndef AIRDUNIO_LIB_GRAPHICS
@@ -9,7 +8,7 @@
 template<typename T>
 class Graphics {
     public:
-        Graphics<T>(Display<T>& display);
+        Graphics(Display<T>& display);
         Graphics<T>& drawPoint(uint16_t x, uint16_t y, T color);
         Graphics<T>& drawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, T color);
         Graphics<T>& drawCircle(uint16_t x, uint16_t y, uint16_t radius, T color);
