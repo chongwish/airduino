@@ -76,7 +76,7 @@ void loop() {
 
 There are some examples to show how they work, such as `./examples/ssd1306.ino`:
 
-![ssd1306 example](./images/ssd1306.mp4)
+https://github.com/chongwish/airdunio/assets/9025604/5c2c9f4d-4fcc-4b12-9aee-3da777bea04d
 
 As practice, they are all written in modern c++ language.
 
