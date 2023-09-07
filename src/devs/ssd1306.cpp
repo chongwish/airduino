@@ -1,13 +1,16 @@
 #include "ssd1306.hpp"
 
-Ssd1306::Ssd1306(uint16_t width, uint16_t height, uint16_t scl_pin, uint16_t sda_pin) : 
-    scl_pin(scl_pin), sda_pin(sda_pin),
+Ssd1306::Ssd1306(uint16_t width, uint16_t height) : 
     Display<uint8_t>(width, height),
     coordinate(Coordinate<uint8_t>(width, height / 8)) {
 }
 
 void Ssd1306::begin() {
-    Wire.begin(0x3C);
+#ifdef ARDUINO_ARCH_AIRMCU
+    Wire.setSCL(SCL);
+    Wire.setSDA(SDA);
+#endif
+    Wire.begin();
 
     initDisplay();
 }

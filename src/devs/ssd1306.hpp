@@ -9,14 +9,12 @@
 
 class Ssd1306 : public Display<uint8_t> {
     public:
-        Ssd1306(uint16_t width, uint16_t height, uint16_t scl_pin, uint16_t sda_pin);
+        Ssd1306(uint16_t width, uint16_t height);
         void begin();
         void refresh();
         void fillPoint(uint16_t x, uint16_t y, uint8_t color);
         void fillBlock(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t color);
     private:
-        uint8_t scl_pin;
-        uint8_t sda_pin;
         Coordinate<uint8_t> coordinate;
 
         void initPin();

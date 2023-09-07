@@ -5,7 +5,7 @@
 #include <libs/text.hpp>
 #include <libs/color.hpp>
 
-Ssd1306 ssd1306(128, 64, A5, A4);
+Ssd1306 ssd1306(128, 64);
 Graphics<uint8_t> graphics(ssd1306);
 Text<uint8_t> text(ssd1306);
 Color<uint8_t> color;
@@ -13,7 +13,7 @@ Color<uint8_t> color;
 void setup() {
     ssd1306.begin();
     
-    Serial.begin(9600);
+    Serial.begin(115200);
     Serial.println("ssd1306");
 }
 
