@@ -74,6 +74,7 @@ Graphics<T> &Graphics<T>::drawCircle(uint16_t x, uint16_t y, uint16_t radius, T 
     }
     drawPoint(x - radius, y, color);
     drawPoint(x + radius, y, color);
+    return *this;
 }
 
 template <typename T>
@@ -82,6 +83,7 @@ Graphics<T> &Graphics<T>::drawRectangle(uint16_t x1, uint16_t y1, uint16_t x2, u
     drawLine(x1, y1, x1, y2, color);
     drawLine(x1, y2, x2, y2, color);
     drawLine(x2, y1, x2, y2, color);
+    return *this;
 }
 
 template <typename T>
