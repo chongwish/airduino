@@ -62,7 +62,7 @@ Ssd1306 display_driver(128, 64);
 
 // function
 Graphics<uint8_t> graphics(display_driver);
-Text<uint8_t> text(ssd1306);
+Text<uint8_t> text(display_driver);
 
 void loop() {
     ...
@@ -73,6 +73,10 @@ void loop() {
 }
 ...
 ```
+
+There are some examples to show how they work, such as `./examples/ssd1306.ino`:
+
+![ssd1306 example](./images/ssd1306.mp4)
 
 As practice, they are all written in modern c++ language.
 
