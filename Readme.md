@@ -20,15 +20,22 @@ The driver of device. Now there is only a few drivers:
    
 ### `libs`
 
-These libraries are used to make the driver of device abstract, for examples:
+These libraries are used to make the driver of device **abstract**, for examples:
 
-- Coordinate Interface: How to record information
-- Color Interface
-- Display Interface: How to display
-  - SSD1306 Driver use Coordinate & Color
-  - ST7789 Driver use Color
+- Driver
+  - `Coordinate` Interface: How to record information
+  - `Color` Interface
+  - `Display` Interface: How to display
+    - `Ssd1306` Driver: Use `Coordinate` & `Color` Interface
+    - `St7789` Driver: Use `Color` Interface
+    - ...
+  - ...
+- Function
+  - `Graphics`: Drawing: Use `Display` Driver & `Color` Interface
+  - `Text`: Writing: Use `Display` Driver & `Color` Interface 
+  - ...
 
-They also provide a uniform method for using drivers, for example:
+They also provide a **uniform** method for using drivers, for example:
 
 ```c++
 // select display driver
@@ -47,7 +54,7 @@ void loop() {
 ...
 ```
 
-Decoupling driver & function:
+**Decoupling** driver & function:
 
 ```c++
 // driver
@@ -64,6 +71,7 @@ void loop() {
     text.at(39, 39).print("AirMCU!");
     ...
 }
+...
 ```
 
 As practice, they are all written in modern c++ language.
