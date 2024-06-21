@@ -1,7 +1,7 @@
-void setup() {
+#include <airduino.h>
 
+void setup() {
 }
 
 void loop() {
-    
 }

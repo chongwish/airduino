@@ -1,6 +1,6 @@
 # Airduino
 
-Some libraries, drivers and demos using arduino framework for air001 mcu.
+Some libraries, drivers and demos using arduino framework for **air001** board & **arduino** board.
 
 ---
 
@@ -10,76 +10,102 @@ Last week, I start to learn embedded development by myself. And luckily, I apply
 
 ## Description
 
-### `devs`
+### `apps`
 
-The driver of device. Now there is only a few drivers:
+The `apps` provide usefil functionality to the user:
+
+- Graphics: drawing simple graphics in a screen
+- Text: printing simple character in a screen
+- ...
+
+### `devices`
+
+The `devices` describe how a device works, no matter who the producer is. They uses the driver provided by the producer to drive the device. They provides a common interface for app & `.ino` file:
+
+- Screen: displaying something
+  - PageScreen: displaying something in page mode
+- Gyroscope
+  - 6 Axis Gyroscope: fetching 6-axis data
+- ...
+
+### `drivers`
+
+Every device has many different hardwares. And the `drivers` provide a way to initialize and use these hardware:
 
 - SSD1306 Hardware I2C: OLED/PLED Display
 - ST7789 Software SPI: LCD Display
 - MPU6050 Hardware I2C: Accelerometer Gyroscope Sensor
+- ...
    
 ### `libs`
 
-These libraries are used to make the driver of device **abstract**, for examples:
+The `libs` provides device-independent functions:
 
-- Driver
-  - `Coordinate` Interface: How to record information
-  - `Color` Interface
-  - `Display` Interface: How to display
-    - `Ssd1306` Driver: Use `Coordinate` & `Color` Interface
-    - `St7789` Driver: Use `Color` Interface
-    - ...
-  - ...
-- Function
-  - `Graphics`: Drawing: Use `Display` Driver & `Color` Interface
-  - `Text`: Writing: Use `Display` Driver & `Color` Interface 
-  - ...
+- Coordinate
+- Color
+- DelayCounter
+- ...
 
-They also provide a **uniform** method for using drivers, for example:
+### `thirds`
+
+Third party dependency.
+
+## Demo
+
+Airduino provides a **uniform** method for using devices, for example:
 
 ```c++
+// a screen device which size is 128 x 64 in page mode
+PageScreen<uint8_t, 128, 64> screen;
+
 // select display driver
-Ssd1306 display_driver(128, 64);
-// St7789_7pin display_driver(240, 240, PA_5, PA_7, PA_6, PB_1, PB_0);
+Ssd1306 driver;
+// Ssd1305 driver;
 
-// nothing need to change
-Graphics<uint8_t> graphics(display_driver);
-
-void loop() {
-    graphics.fillScreen(color.white);
-    graphics.drawRectangle(7, 7, 119, 27, color.black);
-    graphics.drawCircle(63, 47, 16, color.black);
+void setup() {
+    ...
+    // nothing need to change
+    screen.loadDriver(&driver);
     ...
 }
-...
-```
-
-**Decoupling** driver & function:
-
-```c++
-// driver
-Ssd1306 display_driver(128, 64);
-
-// function
-Graphics<uint8_t> graphics(display_driver);
-Text<uint8_t> text(display_driver);
 
 void loop() {
     ...
+    screen.display(x, y, color.white);
+    ...
+}
+```
+
+**Decoupling** driver/device & function:
+
+```c++
+// device
+PageScreen<uint8_t, 128, 64> screen;
+
+// function
+Graphics<uint8_t, uint8_t> graphics;
+Text<uint8_t, uint8_t> text;
+
+void setup() {
+    ...
+    graphics.use(&screen);
+    text.use(&screen);
+    ...
+}
+
+void loop() {
+    ...
+    graphics.drawRectangle(7, 7, 119, 27, color.black);
+    graphics.drawCircle(63, 47, 16, color.black);
     text.color(color.black);
     text.at(21, 13).print("Chongwish");
     text.at(39, 39).print("AirMCU!");
     ...
 }
-...
 ```
 
-There are some examples to show how they work, such as `./examples/ssd1306.ino`:
+There are some examples to show how they work, such as `./examples/screen-display`:
 
 https://github.com/chongwish/airdunio/assets/9025604/5c2c9f4d-4fcc-4b12-9aee-3da777bea04d
 
-As practice, they are all written in modern c++ language.
-
-### `thirds`
-
-Third party dependency.
+As a practice, they are all written in modern c++ language.

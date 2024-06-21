@@ -1,0 +1,10 @@
+
+Language: Cpp
+BasedOnStyle: Google
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 0
+DerivePointerAlignment: false
+PointerAlignment: Right
+AccessModifierOffset: -4

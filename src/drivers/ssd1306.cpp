@@ -1,24 +1,25 @@
 #include "ssd1306.hpp"
 
-Ssd1306::Ssd1306(uint16_t width, uint16_t height) : 
-    Display<uint8_t>(width, height),
-    coordinate(Coordinate<uint8_t>(width, height / 8)) {
+void Ssd1306::execute(unsigned char instruction) {
+    Wire.beginTransmission(0x3C);
+    Wire.write(0x00);
+    Wire.write(instruction);
+    Wire.endTransmission();
 }
 
-void Ssd1306::begin() {
+void Ssd1306::send(unsigned char data) {
+    Wire.beginTransmission(0x3C);
+    Wire.write(0x40);
+    Wire.write(data);
+    Wire.endTransmission();
+}
+
+void Ssd1306::initialize() {
 #ifdef ARDUINO_ARCH_AIRMCU
     Wire.setSCL(SCL);
     Wire.setSDA(SDA);
 #endif
     Wire.begin();
-
-    initDisplay();
-}
-
-void Ssd1306::initPin() {
-}
-
-void Ssd1306::initDisplay() {
 
     // turn off oled panel
     execute(0xAE);
@@ -106,53 +107,11 @@ void Ssd1306::initDisplay() {
     execute(0xA1);
 }
 
-inline uint8_t Ssd1306::calculatePageValue(uint16_t x, uint16_t y, uint8_t value) {
-    uint16_t page_index = y / 8;
-    uint8_t page_value = coordinate.getMark(x, page_index);
-    page_value = value ? (page_value | (1 << (y % 8))) : (page_value & (0xFF ^ (1 << (y % 8))));
-    coordinate.mark(x, page_index, page_value);
-    return page_value;
-}
-
-void Ssd1306::execute(unsigned char instruction) {
-    Wire.beginTransmission(0x3C);
-    Wire.write(0x00);
-    Wire.write(instruction);
-    Wire.endTransmission();
-}
-
-void Ssd1306::send(unsigned char data) {
-    Wire.beginTransmission(0x3C);
-    Wire.write(0x40);
-    Wire.write(data);
-    Wire.endTransmission();
-}
-
-void Ssd1306::refresh() {
-}
-
-void Ssd1306::fillPoint(uint16_t x, uint16_t y, uint8_t color) {
-    execute(0xB0 + y / 8);
-    execute(((x & 0xf0) >> 4) | 0x10);
-    execute(x & 0x0f);
-    uint8_t page_value = calculatePageValue(x, y, color);
-    send(page_value);
-}
-
-void Ssd1306::fillBlock(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint8_t color) {
-    for (uint16_t x = x1; x <= x2; x++) {
-        for (uint16_t y = y1; y <= y2; y++) {
-            calculatePageValue(x, y, color);
-        }
-    }
-    uint16_t page_index1 = y1 / 8;
-    uint16_t page_index2 = y2 / 8;
-    for (uint16_t page_index = page_index1; page_index <= page_index2; page_index++) {
-        execute(0xB0 + page_index);
-        execute(x1 & 0x0f);
-        execute(((x1 & 0xf0) >> 4) | 0x10);
-        for (uint8_t x = x1; x <= x2; x++) {
-            send(coordinate.getMark(x, page_index));
-        }
+void Ssd1306::display(const uint8_t &page_x, const uint8_t &page_y, Coordinate<uint8_t, uint8_t> &coordinate, const uint8_t &size) {
+    execute(0xB0 + page_y);
+    execute(((page_x & 0xf0) >> 4) | 0x10);
+    execute(page_x & 0x0f);
+    for (uint8_t i = 0; i < size; i++) {
+        send(coordinate.getMark(page_x + i, page_y));
     }
 }
