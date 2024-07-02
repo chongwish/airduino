@@ -14,7 +14,7 @@ void setup() {
 }
 
 void loop() {
-    screen.display(0, 0, 128, 64, 0);
+    screen.display(0, 0, 128, 64, (uint8_t)0);
 
     delay(1000);
 

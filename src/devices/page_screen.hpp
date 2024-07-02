@@ -27,6 +27,12 @@ class PageScreen : public Device<PageScreenDriver<P, C>>, public ScreenDisplay<P
         coordinate.mark(x, page_index, page_value);
         return page_value;
     }
+    inline void makeCache(const P &x1, const P &x2, const P &page_y1, const P &page_y2) {
+        if (x1 <= cached_x1) cached_x1 = x1;
+        if (x2 >= cached_x2) cached_x2 = x2;
+        if (page_y1 <= cached_page_y1) cached_page_y1 = page_y1;
+        if (page_y2 >= cached_page_y2) cached_page_y2 = page_y2;
+    }
 
 public:
     void display(const P &x, const P &y, const C &value) {
@@ -39,6 +45,35 @@ public:
         for (P x = x1; x <= x2; ++x) {
             for (P y = y1; y <= y2; ++y) {
                 calculatePageValue(x, y, value);
+            }
+        }
+
+        const P page_y1 = y1 / N;
+        const P page_y2 = y2 / N;
+        const P x_size = x2 - x1 + 1;
+
+        for (P page_y = page_y1; page_y <= page_y2; ++page_y) {
+            this->driver->display(x1, page_y, coordinate, x_size);
+        }
+    }
+
+    void display(const P &x1, const P &y1, const P &x2, const P &y2, Coordinate<C, P> &coordinate) {
+        const P page_y1 = y1 / N;
+        const P page_y2 = y2 / N;
+        const P x_size = x2 - x1 + 1;
+
+        for (P page_y = page_y1, y = 0; page_y <= page_y2; ++page_y, ++y) {
+            for (P page_x = x1, x = 0; page_x <= x2; ++page_x, ++x) {
+                this->coordinate.mark(page_x, page_y, coordinate.getMark(x, y));
+            }
+            this->driver->display(x1, page_y, this->coordinate, x_size);
+        }
+    }
+
+    void display(const P &x1, const P &y1, const P &x2, const P &y2, C (*mapColorFn)(const P &x, const P &y)) {
+        for (P x = x1; x <= x2; ++x) {
+            for (P y = y1; y <= y2; ++y) {
+                calculatePageValue(x, y, mapColorFn(x, y));
             }
         }
 
@@ -83,14 +118,39 @@ public:
         const P page_y1 = y1 / N;
         const P page_y2 = y2 / N;
 
-        if (x1 <= cached_x1) cached_x1 = x1;
-        if (x2 >= cached_x2) cached_x2 = x2;
-        if (page_y1 <= cached_page_y1) cached_page_y1 = page_y1;
-        if (page_y2 >= cached_page_y2) cached_page_y2 = page_y2;
+        makeCache(x1, x2, page_y1, page_y2);
+    }
+
+    void cache(const P &x1, const P &y1, const P &x2, const P &y2, Coordinate<C, P> &coordinate) {
+        const P page_y1 = y1 / N;
+        const P page_y2 = y2 / N;
+        const P x_size = x2 - x1 + 1;
+
+        for (P page_y = page_y1, y = 0; page_y <= page_y2; ++page_y, ++y) {
+            for (P page_x = x1, x = 0; page_x <= x2; ++page_x, ++x) {
+                this->coordinate.mark(page_x, page_y, coordinate.getMark(x, y));
+            }
+        }
+
+        makeCache(x1, x2, page_y1, page_y2);
+    }
+
+    void cache(const P &x1, const P &y1, const P &x2, const P &y2, C (*mapColorFn)(const P &x, const P &y)) {
+        for (P x = x1; x <= x2; ++x) {
+            for (P y = y1; y <= y2; ++y) {
+                calculatePageValue(x, y, mapColorFn(x, y));
+            }
+        }
+
+        const P page_y1 = y1 / N;
+        const P page_y2 = y2 / N;
+
+        makeCache(x1, x2, page_y1, page_y2);
     }
 
     P getWidth() { return W; }
     P getHeight() { return H; }
+    C getValue(const P &x, const P &y) { return coordinate.getMark(x, y); }
 };
 
 #endif
