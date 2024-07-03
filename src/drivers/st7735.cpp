@@ -97,6 +97,8 @@ void St7735::initialize() {
     execute(0xC5); /*VCOM*/
     send(0x0E);
 
+    execute(0x21);
+
     execute(0xE0);
     send(0x10);
     send(0x0E);
