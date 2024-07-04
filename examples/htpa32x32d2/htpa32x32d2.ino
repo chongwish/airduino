@@ -19,7 +19,7 @@ void setup() {
     Serial2.begin(115200);
     Serial2.setTimeout(5000);
 
-    st7735.display(0, 0, 159, 79, (uint16_t)0x00);
+    st7735.display(0, 0, 159, 79, (uint16_t)0xffff);
 }
 
 void loop() {
@@ -40,31 +40,85 @@ void loop() {
     st7735.display(0, 0, 160, 80, [](const uint16_t &x, const uint16_t &y) -> uint16_t {
         uint16_t index = x / 8u * 2u + y / 4u * 40u;
         uint16_t t = (data[index]) | (data[index + 1] << 8);
+        uint8_t red = 0u;
+        uint8_t green = 0u;
+        uint8_t blue = 0u;
 
         if (t < 0u) {
-            // black
-            return 0u;
+            // black;
+            red = 0u;
+            green = 0u;
+            blue = 0u;
+
         } else if (t < 100u) {
             // blue
-            return t * 31u / 100;
+            blue = t * 31u / 100;
+            if (blue < 16u) {
+                blue += 16u;
+            } else {
+                red = blue - 15u;
+                green = red;
+                blue = 31u;
+            }
         } else if (t < 200u) {
             // aqua
-            return (((t - 100u) * 31u / 100) << 5) | 31u;
+            green = (t - 100u) * 31u / 100;
+            if (green < 16u) {
+                green += 16u;
+            } else {
+                red = green - 15u;
+                blue = red;
+                green = 31u;
+            }
+            blue += 15u;
         } else if (t < 300u) {
             // green
-            return ((t - 200u) * 31u / 100) << 5;
+            green = (t - 200u) * 31u / 100;
+            if (green < 16u) {
+                green += 16u;
+            } else {
+                red = green - 15u;
+                blue = red;
+                green = 31u;
+            }
         } else if (t < 400u) {
             // yellow
-            return (((t - 300u) * 31u / 100) << 11) | (31u << 5);
+            red = (t - 300u) * 31u / 100;
+            if (red < 16u) {
+                red += 16u;
+            } else {
+                blue = red - 15u;
+                green = blue;
+                red = 31u;
+            }
+            green += 15u;
         } else if (t < 500u) {
             // red
-            return ((t - 400u) * 31u / 100) << 11;
+            red = (t - 400u) * 31u / 100;
+            if (red < 16u) {
+                red += 16u;
+            } else {
+                blue = red - 15u;
+                green = blue;
+                red = 31u;
+            }
         } else if (t < 600u) {
             // purple
-            return ((t - 500u) * 31u / 100) | (31u << 11);
+            blue = (t - 500u) * 31u / 100;
+            if (blue < 16u) {
+                blue += 16u;
+            } else {
+                red = blue - 15u;
+                green = red;
+                blue = 31u;
+            }
+            red += 15u;
         } else {
-            return (31u << 11) | (31u << 6) | 31u;
+            red = 31u;
+            green = 31u;
+            blue = 31u;
         }
+        return (red << 11) | (green << 5) | blue;
     });
 
     delay(100);
