@@ -41,14 +41,30 @@ void loop() {
         uint16_t index = x / 8u * 2u + y / 4u * 40u;
         uint16_t t = (data[index]) | (data[index + 1] << 8);
 
-        if (t < 300u) {
-            return 1u << 11;
-        } else if (t > 400u) {
-            return 31u << 11;
+        if (t < 0u) {
+            // black
+            return 0u;
+        } else if (t < 100u) {
+            // blue
+            return t * 31u / 100;
+        } else if (t < 200u) {
+            // aqua
+            return (((t - 100u) * 31u / 100) << 5) | 31u;
+        } else if (t < 300u) {
+            // green
+            return ((t - 200u) * 31u / 100) << 5;
+        } else if (t < 400u) {
+            // yellow
+            return (((t - 300u) * 31u / 100) << 11) | (31u << 5);
+        } else if (t < 500u) {
+            // red
+            return ((t - 400u) * 31u / 100) << 11;
+        } else if (t < 600u) {
+            // purple
+            return ((t - 500u) * 31u / 100) | (31u << 11);
+        } else {
+            return (31u << 11) | (31u << 6) | 31u;
         }
-
-        uint16_t t1 = (t - 300u) * 31u / 100;
-        return t1 << 11;
     });
 
     delay(100);
