@@ -34,6 +34,7 @@ Every device has many different hardwares. And the `drivers` provide a way to in
 
 - SSD1306 Hardware I2C: OLED/PLED Display
 - ST7789 Software SPI: LCD Display
+- ST7735 Hardware SPI: LCD Display
 - MPU6050 Hardware I2C: Accelerometer Gyroscope Sensor
 - ...
    
@@ -107,5 +108,9 @@ void loop() {
 There are some examples to show how they work, such as `./examples/screen-display`:
 
 https://github.com/chongwish/airdunio/assets/9025604/5c2c9f4d-4fcc-4b12-9aee-3da777bea04d
+
+A thermal imagery using 2k ram:
+
+![thermal-imagery](./images/thermal-imagery.jpg)
 
 As a practice, they are all written in modern c++ language.
