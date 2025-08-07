@@ -10,22 +10,24 @@
 
 #define BOARD_BOTTON_PIN PA_13
 
-#define LED_RED_PIN PA_0
-#define LED_GREEN_PIN PA_1
+#define LED_RED_PIN PA_1
+#define LED_GREEN_PIN PA_0
 #define LED_BLUE_PIN PB_2
 
 // #define MOTOR_A_IN1_PIN PF_0
 // #define MOTOR_A_IN2_PIN PF_1
 // #define MOTOR_A_PWM_PIN PB_6
 
-#define MOTOR_A_IN_PIN PB_6
-#define MOTOR_B_IN_PIN PB_3
+#define MOTOR_A_IN_PIN PB_3
+#define MOTOR_B_IN_PIN PB_0
 
 #define MAX_DURATION 6200
 #define LONG_DURATION 1200
+#define LONGEST_GAP 300
+#define SHORTEST_GAP 30
 
-Button button{BOARD_BOTTON_PIN, GPIO_PULLDOWN, HIGH};
-Pressing pressing;
+Button button{BOARD_BOTTON_PIN, INPUT_PULLDOWN, HIGH};
+Pressing pressing{LONGEST_GAP, SHORTEST_GAP};
 
 LedRgb led_rgb{LED_RED_PIN, LED_GREEN_PIN, LED_BLUE_PIN};
 RainbowLed rainbow_led;
@@ -53,7 +55,7 @@ void loop() {
             uint8_t percent = (duration - LONG_DURATION) * 100 / (MAX_DURATION - LONG_DURATION);
 
             rainbow_led.changeGradually(percent);
-            motor.rotateForward(255 * percent / 100);
+            motor.rotateForward(100 * percent / 100 + 140);
         }
     } else {
         if (pressing.isFinish()) {
@@ -62,7 +64,7 @@ void loop() {
 
             if (counter == 1) {
                 rainbow_led.changeToNextColor();
-                motor.rotateForward(255 * rainbow_led.getLevel() / 6);
+                motor.rotateForward(20 * rainbow_led.getLevel() + 120);
             } else if (counter == 2) {
                 motor.stop();
                 rainbow_led.turnOff();
