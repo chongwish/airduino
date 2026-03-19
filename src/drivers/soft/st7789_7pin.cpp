@@ -17,9 +17,31 @@ void St7789_7pin::execute(unsigned char instruction) {
     handle(instruction);
 }
 
-void St7789_7pin::send(unsigned char data) {
+inline void St7789_7pin::send(unsigned char data) {
     digitalWrite(dc_pin, HIGH);
     handle(data);
+}
+
+inline void St7789_7pin::send2(uint16_t data) {
+    digitalWrite(dc_pin, HIGH);
+    handle(data & 0xff);
+    handle(data >> 8);
+}
+
+inline void St7789_7pin::setArea(const uint16_t &x1, const uint16_t &y1, const uint16_t &x2, const uint16_t &y2) {
+    execute(0x2A);
+    send(x1);
+    send(x1 + 1);
+    send(x2);
+    send(x2 + 1);
+
+    execute(0x2B);
+    send(y1);
+    send(y1 + 0x1A);
+    send(y2);
+    send(y2 + 0x1A);
+
+    execute(0x2C);
 }
 
 void St7789_7pin::initialize() {
@@ -55,27 +77,42 @@ void St7789_7pin::initialize() {
 }
 
 void St7789_7pin::display(const uint16_t &x1, const uint16_t &y1, const uint16_t &x2, const uint16_t &y2, const uint16_t &color) {
-    // column
-    execute(0x2a);
-    send(x1 >> 8);
-    send(x1);
-    send(x2 >> 8);
-    send(x2);
+    setArea(x1, y1, x2, y2);
 
-    // row
-    execute(0x2b);
-    send(y1 >> 8);
-    send(y1);
-    send(y2 >> 8);
-    send(y2);
-
-    execute(0x2C);
-
-    for (uint16_t x = x1; x < x2; ++x) {
-        for (uint16_t y = 0; y < y2; ++y) {
-            send(color >> 8);
-            send(color);
+    for (uint16_t y = y1; y <= y2; ++y) {
+        for (uint16_t x = x1; x <= x2; ++x) {
+            send2(color);
         }
+    }
+}
+
+void St7789_7pin::display(const uint16_t &x1, const uint16_t &y1, const uint16_t &x2, const uint16_t &y2, Coordinate<uint16_t, uint16_t> &coordinate) {
+    setArea(x1, y1, x2, y2);
+
+    uint16_t x_i = 0;
+    uint16_t y_i = 0;
+    for (uint16_t y = y1; y <= y2; ++y) {
+        for (uint16_t x = x1; x <= x2; ++x) {
+            send2(coordinate.getMark(x_i, y_i));
+            ++x_i;
+        }
+        x_i = 0;
+        ++y_i;
+    }
+}
+
+void St7789_7pin::display(const uint16_t &x1, const uint16_t &y1, const uint16_t &x2, const uint16_t &y2, uint16_t (*mapColorFn)(const uint16_t &x, const uint16_t &y)) {
+    setArea(x1, y1, x2, y2);
+
+    uint16_t x_i = 0;
+    uint16_t y_i = 0;
+    for (uint16_t y = y1; y <= y2; ++y) {
+        for (uint16_t x = x1; x <= x2; ++x) {
+            send2(mapColorFn(x_i, y_i));
+            ++x_i;
+        }
+        x_i = 0;
+        ++y_i;
     }
 }
 

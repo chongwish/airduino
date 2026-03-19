@@ -18,6 +18,8 @@ class St7789_7pin : public ScreenDriver<uint16_t, uint16_t> {
     inline void handle(unsigned char oneByte);
     inline void execute(unsigned char instruction);
     inline void send(unsigned char data);
+    inline void send2(uint16_t data);
+    inline void setArea(const uint16_t &x1, const uint16_t &y1, const uint16_t &x2, const uint16_t &y2);
 
 public:
     St7789_7pin() = delete;
@@ -35,6 +37,8 @@ public:
     void initialize();
 
     void display(const uint16_t &x1, const uint16_t &y1, const uint16_t &x2, const uint16_t &y2, const uint16_t &color);
+    void display(const uint16_t &x1, const uint16_t &y1, const uint16_t &x2, const uint16_t &y2, Coordinate<uint16_t, uint16_t> &coordinate);
+    void display(const uint16_t &x1, const uint16_t &y1, const uint16_t &x2, const uint16_t &y2, uint16_t (*mapColorFn)(const uint16_t &x, const uint16_t &y));
 };
 
 }  // namespace soft

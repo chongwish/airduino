@@ -1,9 +1,17 @@
 #ifdef ARDUINO_ARCH_AIRMCU
-#define SCK_PIN PA_5
-#define SDA_PIN PA_7
-#define RST_PIN PA_6
-#define DC_PIN PA_1
-#define BLK_PIN PA_0
+// #define SCK_PIN PA_5
+// #define SDA_PIN PA_7
+// #define RST_PIN PA_6
+// #define DC_PIN PA_1
+// #define BLK_PIN PA_0
+
+#define CS_PIN PA4
+#define SCK_PIN PA5
+#define DC_PIN PB1
+#define SDA_PIN PA7
+#define RST_PIN PA6
+#define BLK_PIN PB0
+
 #else
 #define SCK_PIN PIN_A1
 #define SDA_PIN PIN_A2
